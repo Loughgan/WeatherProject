@@ -1,12 +1,19 @@
 #include <SFE_BMP180.h>
 #include <Wire.h>
+#include <dht.h>
+#include <LiquidCrystal_I2C.h>
 
 SFE_BMP180 pressure;
+dht DHT;
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 #define ALTITUDE 49.0 // Altitude of my house ub Howick
 
+#define DHT11_PIN 7 //Pin for Humidity/temperature sensor as it isn't I2C
+
 void setup()
 {
+  lcd.begin(16, 2);
   Serial.begin(9600);
   Serial.println("REBOOT");
 
@@ -25,6 +32,23 @@ void loop()
 {
   char status;
   double T,P,p0;
+  int check = DHT.read11(DHT11_PIN);
+
+  //HUMIDITY/TEMP Sensor readings here
+  Serial.println();
+  Serial.print("Temperature = ");
+  Serial.println(DHT.temperature);
+  Serial.print("Humidity = ");
+  Serial.println(DHT.humidity);
+
+  //display humidity to LCD
+  //lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("H=");
+  lcd.print(DHT.humidity);
+  lcd.setCursor(4, 0);
+  lcd.print("%  ");
+  
 
   // Loop here getting pressure readings every so often.
 
@@ -62,6 +86,13 @@ void loop()
       Serial.print(" degrees Celsius, or ");
       Serial.print((9.0/5.0)*T+32.0,2);
       Serial.println(" degrees Fahrenheit");
+
+      lcd.setCursor(0, 1);
+      lcd.print("T=");
+      lcd.print(T,2);
+      lcd.print("C  ");
+      lcd.print((9.0/5.0)*T+32.0,2);
+      lcd.print("F");
       
       // Start a pressure measurement:
       // The parameter is the oversampling setting, from 0 to 3 (highest res, longest wait).
@@ -101,6 +132,12 @@ void loop()
           Serial.print(" mb, or ");
           Serial.print(p0*0.0295333727,2);
           Serial.println(" inHg");
+
+          lcd.setCursor(7,0);
+          lcd.print("P=");
+          lcd.print(p0*0.0295333727,2);
+          lcd.print("Hg");
+          
         }
         else Serial.println("error retrieving pressure measurement\n");
       }
