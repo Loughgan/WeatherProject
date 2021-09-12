@@ -7,6 +7,6 @@ void loop() {
   Serial.println("P:986.40");
   Serial.println("F:32.00");
   Serial.println("C:0.00");
-  delay(60000);
+  delay(10000);
 
 }
