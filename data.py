@@ -31,11 +31,11 @@ ser.open()
 #creating a time and a file named after the date to then write the days data to
 d = datetime.datetime.now()
 filename = str(d.month) + "-" + str(d.day) + "-" + str(d.year) + ".txt"
-file = open(filename,"w+")
+
 #reading each line as it should be in the order: Humidity>Pressure>Temp F>Temp C
 i = 0
 try:
-	#while i < 3:
+	while i < 4:
 		h = str(ser.readline())
 		p = str(ser.readline())
 		f = str(ser.readline())
@@ -49,6 +49,7 @@ try:
 		c = c[c.index("C"):c.index("\\")]
 	#writing the data and corresponding time to the file (also printing time for viewing)
 		print(d.month,"/",d.day,"/",d.year," at ",d.strftime("%H"),":",d.strftime("%M"),":",d.strftime("%S"),sep="")
+		file = open(filename,"w+")
 		file.write(str(d.strftime("%H")) + ":" + d.strftime("%M") + ":" + d.strftime("%S") + "\n")
 		file.write(h + "\n" + p + "\n" + f + "\n" + c + "\n\n")
 		file.close()
